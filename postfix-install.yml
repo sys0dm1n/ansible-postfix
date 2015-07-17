@@ -1,0 +1,18 @@
+---
+  - hosts: terraltech.com
+    user: root
+    sudo: yes
+
+    tasks:
+      - name: Set Postfix option hostname
+        debconf: name=postifx question="postfix/mailname" value="{{ansible_fqdn}}" vtype="string"
+
+      - name: Set Postfix option type as internet site
+        debconf: name=postfix question="postfix/main_mailer_type" value="'Internet Site'" vtype="string"
+
+      - name: Install Postfix
+        apt: package={{ item }} state=installed force=yes update_cache=yes cache_valid_time=3600
+        with_items:
+          - postfix
+          - mailutils
+          
